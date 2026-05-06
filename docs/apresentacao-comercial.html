@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apresentação Comercial | Coparticipação Comercial</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sand: "#f6f1e8",
+            cream: "#fffdfa",
+            mist: "#eaf4f6",
+            sky: "#d7edf7",
+            sea: "#78b8c8",
+            pine: "#2f6d73",
+            gold: "#d9b36a",
+            coral: "#ef8a62",
+            ink: "#23404a"
+          },
+          boxShadow: {
+            soft: "0 18px 50px rgba(58, 86, 92, 0.10)"
+          },
+          backgroundImage: {
+            mesh: "radial-gradient(circle at top left, rgba(215,237,247,0.8), transparent 38%), radial-gradient(circle at 80% 20%, rgba(217,179,106,0.18), transparent 22%), linear-gradient(180deg, #fffdfa 0%, #f6f1e8 100%)"
+          },
+          fontFamily: {
+            sans: ["Segoe UI", "Tahoma", "Geneva", "Verdana", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    .projection-table {
+      border-collapse: separate;
+      border-spacing: 0 0.75rem;
+      width: 100%;
+    }
+
+    .projection-table > tbody > tr {
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 28px rgba(58, 86, 92, 0.08);
+    }
+
+    .projection-table th,
+    .projection-table td {
+      border: 0 !important;
+      padding: 1rem 0.85rem;
+      color: #23404a;
+    }
+
+    .projection-table thead th {
+      background: transparent;
+      font-weight: 700;
+    }
+
+    .table-control {
+      border: 1px solid rgba(47, 109, 115, 0.15);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0.7rem 1rem;
+      color: #23404a;
+      outline: none;
+    }
+
+    .table-control:focus {
+      border-color: rgba(47, 109, 115, 0.3);
+      box-shadow: 0 0 0 4px rgba(120, 184, 200, 0.16);
+    }
+
+    .table-pagination {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .table-page-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.4rem;
+      height: 2.4rem;
+      padding: 0 0.85rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #23404a;
+      border: 1px solid rgba(47, 109, 115, 0.12);
+      transition: all 0.2s ease;
+    }
+
+    .table-page-btn.active {
+      background: #2f6d73;
+      color: white;
+      border-color: #2f6d73;
+    }
+
+    .table-page-btn:hover {
+      background: #eaf4f6;
+      border-color: rgba(47, 109, 115, 0.24);
+    }
+
+    .table-page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px);
+    }
+
+    .metric-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -30% -60% auto;
+      width: 150px;
+      height: 150px;
+      border-radius: 999px;
+      background: rgba(215, 237, 247, 0.55);
+    }
+
+    .simulator-input {
+      width: 100%;
+      border: 1px solid rgba(47, 109, 115, 0.14);
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 1rem;
+      padding: 0.9rem 1rem;
+      color: #23404a;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .simulator-input:focus {
+      border-color: rgba(47, 109, 115, 0.3);
+      box-shadow: 0 0 0 4px rgba(120, 184, 200, 0.16);
+    }
+
+    .simulator-input[readonly] {
+      background: rgba(234, 244, 246, 0.8);
+      color: rgba(35, 64, 74, 0.78);
+      cursor: not-allowed;
+    }
+
+    .simulator-field-compact {
+      width: 160px;
+      min-width: 160px;
+      max-width: 160px;
+    }
+
+    .simulator-field-medium {
+      width: 180px;
+      min-width: 180px;
+      max-width: 180px;
+    }
+
+    .simulator-action {
+      width: 180px;
+      min-width: 180px;
+      max-width: 180px;
+    }
+
+    .simulator-button {
+      min-height: 56px;
+      box-shadow: 0 14px 28px rgba(47, 109, 115, 0.18);
+    }
+  </style>
+</head>
+<body class="bg-mesh text-ink min-h-screen">
+  <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <header class="glass rounded-[2rem] border border-white/60 shadow-soft">
+      <div class="grid gap-10 px-6 py-10 lg:grid-cols-[1.2fr_0.8fr] lg:px-10 lg:py-14">
+        <div class="space-y-6">
+          <span class="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-pine">
+            <i class="bi bi-stars"></i>
+            Apresentação comercial inicial
+          </span>
+          <div class="space-y-4">
+            <h1 class="max-w-3xl text-4xl font-bold leading-tight text-ink sm:text-5xl">
+              Tecnologia, dados e campanhas automáticas para transformar capital em operação comercial escalável
+            </h1>
+            <p class="max-w-2xl text-lg leading-8 text-slate-600">
+              Uma estrutura de coparticipação comercial que combina automação, inteligência de dados, páginas de alta conversão e mídia paga para operar campanhas com visão de crescimento, liquidez e transparência.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="#projecao" class="inline-flex items-center gap-2 rounded-full bg-pine px-6 py-3 font-semibold text-white transition hover:bg-ink">
+              <i class="bi bi-graph-up-arrow"></i>
+              Ver projeção comercial
+            </a>
+            <a href="#modelo" class="inline-flex items-center gap-2 rounded-full border border-pine/20 bg-white/80 px-6 py-3 font-semibold text-pine transition hover:bg-white">
+              <i class="bi bi-diagram-3"></i>
+              Entender o modelo
+            </a>
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          <div class="metric-card rounded-[1.75rem] border border-white/60 bg-white/80 p-6 shadow-soft">
+            <div class="mb-4 flex items-center justify-between">
+              <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky text-2xl text-pine">
+                <i class="bi bi-cash-coin"></i>
+              </span>
+              <span class="rounded-full bg-mist px-3 py-1 text-xs font-semibold text-pine">Bruto anual</span>
+            </div>
+            <p class="text-sm uppercase tracking-[0.2em] text-slate-500">Crescimento projetado</p>
+            <p id="grossPercentDisplay" class="mt-2 text-4xl font-bold text-ink">85,15%</p>
+            <p class="mt-3 text-sm leading-6 text-slate-600">Projeção operacional bruta antes de impostos, taxas e retenções de risco.</p>
+          </div>
+          <div class="metric-card rounded-[1.75rem] border border-white/60 bg-white/80 p-6 shadow-soft">
+            <div class="mb-4 flex items-center justify-between">
+              <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fde7dc] text-2xl text-coral">
+                <i class="bi bi-shield-check"></i>
+              </span>
+              <span class="rounded-full bg-[#fff0ea] px-3 py-1 text-xs font-semibold text-coral">Líquido anual</span>
+            </div>
+            <p class="text-sm uppercase tracking-[0.2em] text-slate-500">Após retenções previstas</p>
+            <p id="netPercentDisplay" class="mt-2 text-4xl font-bold text-ink">59,61%</p>
+            <p class="mt-3 text-sm leading-6 text-slate-600">Estimativa líquida com retenção prevista de 30% para impostos, taxas e reservas operacionais.</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="space-y-8 py-8">
+      <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <article class="glass rounded-[1.75rem] border border-white/60 p-6 shadow-soft">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky text-2xl text-pine">
+            <i class="bi bi-google"></i>
+          </div>
+          <h2 class="text-lg font-bold">Campanhas conectadas</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Operação integrada com Google Ads, Facebook Ads, páginas de vendas e funis rastreáveis.</p>
+        </article>
+        <article class="glass rounded-[1.75rem] border border-white/60 p-6 shadow-soft">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e3f3ec] text-2xl text-[#2d7b59]">
+            <i class="bi bi-cpu"></i>
+          </div>
+          <h2 class="text-lg font-bold">Automação e dados</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Uso de scripts, inteligência de dados e rotinas automatizadas para orientar decisões de mídia e escala.</p>
+        </article>
+        <article class="glass rounded-[1.75rem] border border-white/60 p-6 shadow-soft">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0da] text-2xl text-[#a97825]">
+            <i class="bi bi-bar-chart-line"></i>
+          </div>
+          <h2 class="text-lg font-bold">Modelo orientado por métricas</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-600">A estratégia cresce com base em ROI, ROAS, testes A/B e ganho de eficiência por ciclo.</p>
+        </article>
+        <article class="glass rounded-[1.75rem] border border-white/60 p-6 shadow-soft">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fce7e7] text-2xl text-[#b15959]">
+            <i class="bi bi-people"></i>
+          </div>
+          <h2 class="text-lg font-bold">Liquidez com proteção</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Saque parcial de lucros e reinvestimento controlado para equilibrar crescimento e segurança operacional.</p>
+        </article>
+      </section>
+
+      <section id="modelo" class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mist text-2xl text-pine">
+              <i class="bi bi-diagram-3-fill"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Modelo operacional</p>
+              <h2 class="text-2xl font-bold">Como a plataforma trabalha</h2>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p class="font-semibold">1. Curadoria e leitura de mercado</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Mapeamento de nichos, produtos e comportamento de busca com apoio de dados e sinais de conversão.</p>
+            </div>
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p class="font-semibold">2. Estruturação e teste de campanhas</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Criação de anúncios, segmentações, páginas e ofertas com validações controladas.</p>
+            </div>
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p class="font-semibold">3. Escala com inteligência operacional</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Campanhas vencedoras recebem mais capital e automações para ampliar o potencial de faturamento.</p>
+            </div>
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p class="font-semibold">4. Distribuição do resultado</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">O lucro líquido é dividido entre reinvestimento, parceiro comercial e plataforma.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-8">
+          <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+            <div class="mb-6 flex items-center gap-3">
+              <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0da] text-2xl text-[#a97825]">
+                <i class="bi bi-pie-chart-fill"></i>
+              </span>
+              <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Distribuição financeira</p>
+                <h2 class="text-2xl font-bold">Divisão operacional do resultado</h2>
+              </div>
+            </div>
+            <div class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+              <div class="space-y-3">
+                <div class="rounded-2xl bg-white/85 p-4">
+                  <p class="font-semibold text-pine">50% Fundo de reinvestimento</p>
+                  <p class="mt-1 text-sm leading-6 text-slate-600">Aumenta a capacidade operacional das campanhas sem exigir novo aporte.</p>
+                </div>
+                <div class="rounded-2xl bg-white/85 p-4">
+                  <p class="font-semibold text-coral">25% Parceiro comercial</p>
+                  <p class="mt-1 text-sm leading-6 text-slate-600">Retorno direcionado ao parceiro como resultado da coparticipação.</p>
+                </div>
+                <div class="rounded-2xl bg-white/85 p-4">
+                  <p class="font-semibold text-[#a97825]">25% Plataforma</p>
+                  <p class="mt-1 text-sm leading-6 text-slate-600">Cobre tecnologia, equipe, inteligência operacional e crescimento institucional.</p>
+                </div>
+              </div>
+              <div class="rounded-[1.5rem] bg-white/85 p-4">
+                <canvas id="distributionChart" height="230"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-3">
+            <article class="glass rounded-[1.75rem] border border-white/60 p-5 shadow-soft">
+              <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Capital projetado</p>
+              <p id="capitalProjectedDisplay" class="mt-2 text-3xl font-bold">R$ 1.425,76</p>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Valor estimado em operação após 12 ciclos com reinvestimento parcial.</p>
+            </article>
+            <article class="glass rounded-[1.75rem] border border-white/60 p-5 shadow-soft">
+              <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Saques acumulados</p>
+              <p id="withdrawalsDisplay" class="mt-2 text-3xl font-bold">R$ 425,76</p>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Liquidez projetada do parceiro ao longo do período anual.</p>
+            </article>
+            <article class="glass rounded-[1.75rem] border border-white/60 p-5 shadow-soft">
+              <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Ganho líquido anual</p>
+              <p id="netGainDisplay" class="mt-2 text-3xl font-bold">R$ 596,06</p>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Estimativa após retenção prevista de 30% para impostos, taxas e reserva.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="projecao" class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+        <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Projeção comercial</p>
+            <h2 class="text-2xl font-bold">Ciclos operacionais com crescimento progressivo</h2>
+            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              A tabela abaixo mostra uma simulação com aporte inicial de R$ 1.000,00, lucro projetado de 6% por ciclo e divisão equilibrada entre saque e reinvestimento.
+            </p>
+          </div>
+          <div class="rounded-2xl bg-white/85 px-4 py-3 text-sm text-slate-600">
+            <span class="font-semibold text-ink">Leitura rápida:</span> 38,81% em 6 ciclos e 85,15% bruto anual antes das retenções previstas.
+          </div>
+        </div>
+        <div class="mb-8 rounded-[1.75rem] border border-white/60 bg-white/75 p-5 shadow-soft">
+          <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Simulador</p>
+              <h3 class="text-xl font-bold text-ink">Personalize valor, tempo e retenção</h3>
+            </div>
+            <div class="rounded-full bg-mist px-4 py-2 text-sm text-pine">
+              Os dados ficam salvos automaticamente no navegador
+            </div>
+          </div>
+          <form id="simulatorForm" class="grid gap-4 md:grid-cols-2 xl:grid-cols-[1.45fr_0.8fr_0.8fr_0.8fr_auto] xl:items-end">
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-slate-600">Valor inicial</span>
+              <input id="initialInvestmentInput" class="simulator-input" type="text" inputmode="numeric" value="R$ 1.000,00" aria-label="Valor inicial em reais">
+            </label>
+            <label class="block simulator-field-compact">
+              <span class="mb-2 block text-sm font-semibold text-slate-600">Qtd. de ciclos</span>
+              <input id="cyclesInput" class="simulator-input" type="number" min="1" max="24" step="1" value="6">
+            </label>
+            <label class="block simulator-field-medium">
+              <span class="mb-2 block text-sm font-semibold text-slate-600">Lucro por ciclo (%)</span>
+              <input id="profitRateInput" class="simulator-input" type="number" min="0.1" max="100" step="0.1" value="6" readonly>
+            </label>
+            <label class="block simulator-field-medium">
+              <span class="mb-2 block text-sm font-semibold text-slate-600">Retenção prevista (%)</span>
+              <input id="retentionRateInput" class="simulator-input" type="number" min="0" max="100" step="0.1" value="30" readonly>
+            </label>
+            <div class="simulator-action flex items-end">
+              <button id="simulateButton" type="submit" class="simulator-button inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-pine px-5 py-4 font-semibold text-white transition hover:bg-ink">
+                <i class="bi bi-magic"></i>
+                Simular
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="mb-4 grid gap-4 lg:grid-cols-[0.8fr_1.2fr_0.8fr] lg:items-center">
+          <label class="flex items-center gap-3 rounded-full bg-white/85 px-4 py-3 text-sm text-slate-600">
+            <i class="bi bi-list-ol text-pine"></i>
+            <span>Ciclos por página</span>
+            <select id="tablePerPage" class="table-control py-2 pr-8">
+              <option value="6">6</option>
+              <option value="12">12</option>
+              <option value="24">24</option>
+            </select>
+          </label>
+          <label class="flex items-center gap-3 rounded-full bg-white/85 px-4 py-3 text-sm text-slate-600">
+            <i class="bi bi-search text-pine"></i>
+            <input id="tableSearchInput" class="w-full bg-transparent outline-none" type="text" placeholder="Buscar na projeção...">
+          </label>
+          <div id="tableInfo" class="rounded-full bg-white/85 px-4 py-3 text-sm text-slate-600 lg:text-right">
+            Mostrando 0 a 0 de 0 ciclos
+          </div>
+        </div>
+        <div class="overflow-hidden rounded-[1.5rem]">
+          <table id="projectionTable" class="projection-table min-w-full">
+            <thead>
+              <tr>
+                <th>Ciclo</th>
+                <th>Capital Alocado</th>
+                <th>Lucro Projetado</th>
+                <th>Saque de Lucro</th>
+                <th>Reinvestimento</th>
+                <th>Novo Capital</th>
+                <th>Saque Total Opcional</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="mt-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div class="rounded-full bg-white/85 px-4 py-3 text-sm text-slate-600">
+            A tabela acompanha a simulação e atualiza a paginação automaticamente.
+          </div>
+          <div id="tablePagination" class="table-pagination"></div>
+        </div>
+      </section>
+
+      <section class="grid gap-8 lg:grid-cols-2">
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky text-2xl text-pine">
+              <i class="bi bi-graph-up"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Evolução do capital</p>
+              <h2 class="text-2xl font-bold">Crescimento por ciclo</h2>
+            </div>
+          </div>
+          <canvas id="capitalChart" height="260"></canvas>
+        </div>
+
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fde7dc] text-2xl text-coral">
+              <i class="bi bi-bar-chart-steps"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Bruto x líquido</p>
+              <h2 class="text-2xl font-bold">Leitura anual mais realista</h2>
+            </div>
+          </div>
+          <canvas id="grossNetChart" height="260"></canvas>
+        </div>
+      </section>
+
+      <section class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e3f3ec] text-2xl text-[#2d7b59]">
+              <i class="bi bi-shield-lock"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Retenções previstas</p>
+              <h2 class="text-2xl font-bold">Transparência sobre impostos e reservas</h2>
+            </div>
+          </div>
+          <div class="space-y-4 text-sm leading-7 text-slate-600">
+            <p>
+              A projeção anual bruta de <strong id="grossRetentionText" class="text-ink">85,15%</strong> representa o potencial operacional antes dos descontos previstos sobre a operação.
+            </p>
+            <p>
+              Para manter a comunicação comercial responsável, consideramos uma retenção estimada de <strong id="retentionPercentText" class="text-ink">30%</strong>, destinada a impostos, taxas de plataforma, emissão fiscal e fundo de reserva para flutuações de mídia.
+            </p>
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p><strong class="text-ink">Ganho bruto anual:</strong> <span id="grossGainDisplay">R$ 851,52</span></p>
+              <p><strong class="text-ink">Retenção prevista:</strong> <span id="retentionAmountDisplay">R$ 255,46</span></p>
+              <p><strong class="text-ink">Ganho líquido estimado:</strong> <span id="netGainTextDisplay">R$ 596,06</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0da] text-2xl text-[#a97825]">
+              <i class="bi bi-lightbulb"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Tese comercial</p>
+              <h2 class="text-2xl font-bold">Por que este modelo é atraente</h2>
+            </div>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p class="font-semibold">Tecnologia aplicada</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Automação, dados e integração com mídia paga para reduzir achismo e acelerar decisões.</p>
+            </div>
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p class="font-semibold">Escala progressiva</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Campanhas vencedoras recebem mais capital e ampliam a capacidade comercial da operação.</p>
+            </div>
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p class="font-semibold">Liquidez equilibrada</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Saque parcial permite retorno visível sem comprometer o ritmo de crescimento.</p>
+            </div>
+            <div class="rounded-2xl bg-white/85 p-4">
+              <p class="font-semibold">Postura responsável</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">O material trabalha com projeções operacionais, não com promessa fixa de rendimento.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/imask"></script>
+  <script type="module">
+    import { animate, inView, stagger } from "https://cdn.jsdelivr.net/npm/motion@12.11.1/+esm";
+
+    const STORAGE_KEY = "coparticipacao-simulador-v1";
+    const DEFAULTS = {
+      initialInvestment: 1000,
+      cycles: 6,
+      profitRate: 6,
+      retentionRate: 30
+    };
+
+    const formatCurrency = (value) =>
+      new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+    const formatPercent = (value) => `${value.toFixed(2).replace(".", ",")}%`;
+    const round2 = (value) => Math.round(value * 100) / 100;
+
+    const form = document.getElementById("simulatorForm");
+    const initialInvestmentInput = document.getElementById("initialInvestmentInput");
+    const cyclesInput = document.getElementById("cyclesInput");
+    const profitRateInput = document.getElementById("profitRateInput");
+    const retentionRateInput = document.getElementById("retentionRateInput");
+    const tbody = document.querySelector("#projectionTable tbody");
+    const tablePerPage = document.getElementById("tablePerPage");
+    const tableSearchInput = document.getElementById("tableSearchInput");
+    const tableInfo = document.getElementById("tableInfo");
+    const tablePagination = document.getElementById("tablePagination");
+    const metricNodes = {
+      grossPercentDisplay: document.getElementById("grossPercentDisplay"),
+      netPercentDisplay: document.getElementById("netPercentDisplay"),
+      capitalProjectedDisplay: document.getElementById("capitalProjectedDisplay"),
+      withdrawalsDisplay: document.getElementById("withdrawalsDisplay"),
+      netGainDisplay: document.getElementById("netGainDisplay"),
+      grossRetentionText: document.getElementById("grossRetentionText"),
+      retentionPercentText: document.getElementById("retentionPercentText"),
+      grossGainDisplay: document.getElementById("grossGainDisplay"),
+      retentionAmountDisplay: document.getElementById("retentionAmountDisplay"),
+      netGainTextDisplay: document.getElementById("netGainTextDisplay")
+    };
+
+    const currencyMask = IMask(initialInvestmentInput, {
+      mask: "R$ num",
+      blocks: {
+        num: {
+          mask: Number,
+          scale: 2,
+          signed: false,
+          thousandsSeparator: ".",
+          padFractionalZeros: true,
+          normalizeZeros: true,
+          radix: ",",
+          mapToRadix: ["."]
+        }
+      }
+    });
+
+    const getStoredSettings = () => {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return parsed ? { ...DEFAULTS, ...parsed } : DEFAULTS;
+      } catch {
+        return DEFAULTS;
+      }
+    };
+
+    const saveSettings = (settings) => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    };
+
+    const generateProjectionData = ({ initialInvestment, cycles, profitRate }) => {
+      const rows = [];
+      let capital = initialInvestment;
+      const rate = profitRate / 100;
+
+      for (let cycle = 1; cycle <= cycles; cycle += 1) {
+        const profit = round2(capital * rate);
+        const withdrawal = round2(profit / 2);
+        const reinvestment = round2(profit / 2);
+        const newCapital = round2(capital + reinvestment);
+
+        rows.push({
+          cycle,
+          capital: round2(capital),
+          profit,
+          withdrawal,
+          reinvestment,
+          newCapital,
+          optional: profit
+        });
+
+        capital = newCapital;
+      }
+
+      return rows;
+    };
+    const tableState = {
+      allRows: [],
+      filteredRows: [],
+      currentPage: 1,
+      perPage: 6,
+      search: ""
+    };
+
+    const buildTableRow = (row) => `
+      <tr>
+        <td>${row.cycle}</td>
+        <td>${formatCurrency(row.capital)}</td>
+        <td>${formatCurrency(row.profit)}</td>
+        <td>${formatCurrency(row.withdrawal)}</td>
+        <td>${formatCurrency(row.reinvestment)}</td>
+        <td>${formatCurrency(row.newCapital)}</td>
+        <td>${formatCurrency(row.optional)}</td>
+      </tr>
+    `;
+
+    const renderPagination = () => {
+      const totalPages = Math.max(1, Math.ceil(tableState.filteredRows.length / tableState.perPage));
+      tablePagination.innerHTML = "";
+
+      const buttons = [
+        { label: '<i class="bi bi-chevron-double-left"></i>', page: 1, disabled: tableState.currentPage === 1 },
+        { label: '<i class="bi bi-chevron-left"></i>', page: Math.max(1, tableState.currentPage - 1), disabled: tableState.currentPage === 1 }
+      ];
+
+      buttons.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "table-page-btn";
+        button.disabled = item.disabled;
+        button.innerHTML = item.label;
+        button.addEventListener("click", () => {
+          tableState.currentPage = item.page;
+          renderTable();
+        });
+        tablePagination.appendChild(button);
+      });
+
+      for (let page = 1; page <= totalPages; page += 1) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `table-page-btn${page === tableState.currentPage ? " active" : ""}`;
+        button.textContent = String(page);
+        button.addEventListener("click", () => {
+          tableState.currentPage = page;
+          renderTable();
+        });
+        tablePagination.appendChild(button);
+      }
+
+      [
+        { label: '<i class="bi bi-chevron-right"></i>', page: Math.min(totalPages, tableState.currentPage + 1), disabled: tableState.currentPage === totalPages },
+        { label: '<i class="bi bi-chevron-double-right"></i>', page: totalPages, disabled: tableState.currentPage === totalPages }
+      ].forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "table-page-btn";
+        button.disabled = item.disabled;
+        button.innerHTML = item.label;
+        button.addEventListener("click", () => {
+          tableState.currentPage = item.page;
+          renderTable();
+        });
+        tablePagination.appendChild(button);
+      });
+    };
+
+    const renderTable = () => {
+      const totalRows = tableState.filteredRows.length;
+      const totalPages = Math.max(1, Math.ceil(totalRows / tableState.perPage));
+      tableState.currentPage = Math.min(tableState.currentPage, totalPages);
+
+      const startIndex = (tableState.currentPage - 1) * tableState.perPage;
+      const endIndex = startIndex + tableState.perPage;
+      const rows = tableState.filteredRows.slice(startIndex, endIndex);
+
+      tbody.innerHTML = rows.length
+        ? rows.map(buildTableRow).join("")
+        : '<tr><td colspan="7" class="text-center text-slate-500">Nenhum ciclo encontrado</td></tr>';
+
+      const startLabel = totalRows === 0 ? 0 : startIndex + 1;
+      const endLabel = Math.min(endIndex, totalRows);
+      tableInfo.textContent = `Mostrando ${startLabel} a ${endLabel} de ${totalRows} ciclos`;
+      renderPagination();
+    };
+
+    const syncTableState = (projectionData) => {
+      tableState.allRows = projectionData;
+      tableState.filteredRows = projectionData.filter((row) => {
+        if (!tableState.search) return true;
+        const text = [
+          row.cycle,
+          formatCurrency(row.capital),
+          formatCurrency(row.profit),
+          formatCurrency(row.withdrawal),
+          formatCurrency(row.reinvestment),
+          formatCurrency(row.newCapital),
+          formatCurrency(row.optional)
+        ].join(" ").toLowerCase();
+        return text.includes(tableState.search.toLowerCase());
+      });
+      renderTable();
+    };
+
+    const capitalChart = new Chart(document.getElementById("capitalChart"), {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: "Capital em operação",
+            data: [],
+            borderColor: "#2f6d73",
+            backgroundColor: "rgba(120, 184, 200, 0.15)",
+            fill: true,
+            tension: 0.35,
+            borderWidth: 3,
+            pointRadius: 5,
+            pointBackgroundColor: "#2f6d73"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            ticks: {
+              callback: (value) => formatCurrency(value)
+            },
+            grid: { color: "rgba(47, 109, 115, 0.08)" }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    const distributionChart = new Chart(document.getElementById("distributionChart"), {
+      type: "doughnut",
+      data: {
+        labels: ["Reinvestimento", "Parceiro", "Plataforma"],
+        datasets: [{
+          data: [50, 25, 25],
+          backgroundColor: ["#78b8c8", "#ef8a62", "#d9b36a"],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        cutout: "72%",
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              usePointStyle: true,
+              boxWidth: 10,
+              padding: 18
+            }
+          }
+        }
+      }
+    });
+
+    const grossNetChart = new Chart(document.getElementById("grossNetChart"), {
+      type: "bar",
+      data: {
+        labels: ["Bruto anual", "Retenção prevista", "Líquido anual"],
+        datasets: [{
+          data: [],
+          backgroundColor: ["#78b8c8", "#ef8a62", "#2f6d73"],
+          borderRadius: 18
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            ticks: {
+              callback: (value) => formatCurrency(value)
+            },
+            grid: { color: "rgba(47, 109, 115, 0.08)" }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    const hydrateForm = (settings) => {
+      currencyMask.typedValue = settings.initialInvestment;
+      cyclesInput.value = settings.cycles;
+      profitRateInput.value = settings.profitRate;
+      retentionRateInput.value = settings.retentionRate;
+    };
+
+    const readFormSettings = () => ({
+      initialInvestment: Math.max(100, Number(currencyMask.typedValue || DEFAULTS.initialInvestment)),
+      cycles: Math.min(24, Math.max(1, Math.trunc(Number(cyclesInput.value || DEFAULTS.cycles)))),
+      profitRate: Number(profitRateInput.value || DEFAULTS.profitRate),
+      retentionRate: Number(retentionRateInput.value || DEFAULTS.retentionRate)
+    });
+
+    const updateDashboard = (settings) => {
+      const projectionData = generateProjectionData(settings);
+      const totalWithdrawals = round2(projectionData.reduce((sum, item) => sum + item.withdrawal, 0));
+      const finalCapital = projectionData.length ? projectionData[projectionData.length - 1].newCapital : settings.initialInvestment;
+      const grossGain = round2((finalCapital - settings.initialInvestment) + totalWithdrawals);
+      const grossPercent = round2((grossGain / settings.initialInvestment) * 100);
+      const retentionAmount = round2(grossGain * (settings.retentionRate / 100));
+      const netGain = round2(grossGain - retentionAmount);
+      const netPercent = round2((netGain / settings.initialInvestment) * 100);
+
+      syncTableState(projectionData);
+
+      capitalChart.data.labels = projectionData.map((item) => `Ciclo ${item.cycle}`);
+      capitalChart.data.datasets[0].data = projectionData.map((item) => item.newCapital);
+      capitalChart.update();
+
+      grossNetChart.data.datasets[0].data = [grossGain, retentionAmount, netGain];
+      grossNetChart.update();
+
+      metricNodes.grossPercentDisplay.textContent = formatPercent(grossPercent);
+      metricNodes.netPercentDisplay.textContent = formatPercent(netPercent);
+      metricNodes.capitalProjectedDisplay.textContent = formatCurrency(finalCapital);
+      metricNodes.withdrawalsDisplay.textContent = formatCurrency(totalWithdrawals);
+      metricNodes.netGainDisplay.textContent = formatCurrency(netGain);
+      metricNodes.grossRetentionText.textContent = formatPercent(grossPercent);
+      metricNodes.retentionPercentText.textContent = formatPercent(settings.retentionRate);
+      metricNodes.grossGainDisplay.textContent = formatCurrency(grossGain);
+      metricNodes.retentionAmountDisplay.textContent = formatCurrency(retentionAmount);
+      metricNodes.netGainTextDisplay.textContent = formatCurrency(netGain);
+    };
+
+    const initialSettings = getStoredSettings();
+    hydrateForm(initialSettings);
+    tablePerPage.value = String(tableState.perPage);
+    updateDashboard(initialSettings);
+
+    tablePerPage.addEventListener("change", () => {
+      tableState.perPage = Math.max(1, Number(tablePerPage.value || 6));
+      tableState.currentPage = 1;
+      renderTable();
+    });
+
+    tableSearchInput.addEventListener("input", () => {
+      tableState.search = tableSearchInput.value.trim();
+      tableState.currentPage = 1;
+      syncTableState(tableState.allRows);
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const settings = readFormSettings();
+      hydrateForm(settings);
+      saveSettings(settings);
+      updateDashboard(settings);
+      animate("#simulateButton", { scale: [1, 0.97, 1] }, { duration: 0.35 });
+    });
+
+    animate("header > div > *", { opacity: [0, 1], y: [28, 0] }, { duration: 0.8, delay: stagger(0.1) });
+
+    inView(".glass", (element) => {
+      animate(
+        element,
+        { opacity: [0, 1], y: [24, 0], scale: [0.98, 1] },
+        { duration: 0.65, easing: "ease-out" }
+      );
+    }, { margin: "-10% 0px -10% 0px" });
+
+    document.querySelectorAll(".metric-card p.text-4xl").forEach((node) => {
+      const raw = node.textContent.replace("%", "").replace(",", ".");
+      const target = Number(raw);
+      const suffix = node.textContent.includes("%") ? "%" : "";
+      const counter = { value: 0 };
+      animate(counter, { value: target }, {
+        duration: 1.5,
+        easing: "ease-out",
+        onUpdate: (latest) => {
+          node.textContent = `${latest.value.toFixed(2).replace(".", ",")}${suffix}`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
