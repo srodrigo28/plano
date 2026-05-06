@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plano de Investimento | Seb Soluções APP LTDA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pearl: "#fbf8f2",
+            shell: "#f3eee6",
+            mist: "#e7f1f3",
+            lake: "#79b8c7",
+            pine: "#285e68",
+            ink: "#1f3b44",
+            gold: "#cda45d",
+            coral: "#e98167",
+            mint: "#dff1e7"
+          },
+          boxShadow: {
+            soft: "0 24px 60px rgba(37, 66, 73, 0.10)"
+          },
+          backgroundImage: {
+            aura: "radial-gradient(circle at top left, rgba(121,184,199,0.22), transparent 32%), radial-gradient(circle at 85% 10%, rgba(205,164,93,0.18), transparent 18%), linear-gradient(180deg, #fbf8f2 0%, #f3eee6 100%)"
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    .glass {
+      background: rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(18px);
+    }
+
+    .card-ring {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-ring::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      right: -70px;
+      bottom: -80px;
+      border-radius: 999px;
+      background: rgba(121, 184, 199, 0.16);
+    }
+
+    .projection-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 0.75rem;
+    }
+
+    .projection-table thead th {
+      padding: 0.95rem 0.85rem;
+      font-weight: 700;
+      color: #1f3b44;
+      text-align: left;
+    }
+
+    .projection-table tbody tr {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 10px 24px rgba(37, 66, 73, 0.08);
+    }
+
+    .projection-table tbody td {
+      padding: 1rem 0.85rem;
+      color: #284750;
+    }
+
+    .drawer-open {
+      overflow: hidden;
+    }
+
+    .pdf-block,
+    .projection-table,
+    canvas {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .print-wrap {
+        max-width: none !important;
+        padding: 0 !important;
+      }
+
+      .glass {
+        background: white !important;
+        box-shadow: none !important;
+        border-color: #d9d9d9 !important;
+      }
+
+      .overflow-x-auto {
+        overflow: visible !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-aura text-ink">
+  <div id="mobileBackdrop" class="no-print fixed inset-0 z-40 hidden bg-slate-950/35"></div>
+
+  <aside id="mobileDrawer" class="no-print fixed left-0 top-0 z-50 h-full w-[84%] max-w-[340px] -translate-x-full border-r border-white/60 bg-white/94 px-6 py-6 shadow-soft transition-transform duration-300">
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <p class="text-sm uppercase tracking-[0.22em] text-slate-500">Navegação</p>
+        <h2 class="text-xl font-bold text-ink">Plano de Investimento</h2>
+      </div>
+      <button id="drawerClose" type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-shell text-xl text-ink">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <nav class="space-y-2">
+      <a href="#visao" class="drawer-link flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-700 transition hover:bg-mist">
+        <i class="bi bi-house-door"></i>
+        Visão geral
+      </a>
+      <a href="#captacao" class="drawer-link flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-700 transition hover:bg-mist">
+        <i class="bi bi-bullseye"></i>
+        Captação
+      </a>
+      <a href="#seguranca" class="drawer-link flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-700 transition hover:bg-mist">
+        <i class="bi bi-shield-check"></i>
+        Segurança
+      </a>
+      <a href="#retorno" class="drawer-link flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-700 transition hover:bg-mist">
+        <i class="bi bi-graph-up-arrow"></i>
+        Retorno
+      </a>
+      <a href="#cenarios" class="drawer-link flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-700 transition hover:bg-mist">
+        <i class="bi bi-bar-chart"></i>
+        Cenários
+      </a>
+      <a href="#pdf" class="drawer-link flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-700 transition hover:bg-mist">
+        <i class="bi bi-file-earmark-pdf"></i>
+        Gerar PDF
+      </a>
+    </nav>
+  </aside>
+
+  <div class="print-wrap mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+    <header class="no-print mb-6 flex items-center justify-between rounded-[2rem] border border-white/60 bg-white/72 px-4 py-4 shadow-soft md:px-6">
+      <div class="flex items-center gap-3">
+        <button id="drawerOpen" type="button" class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mist text-xl text-pine md:hidden">
+          <i class="bi bi-list"></i>
+        </button>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">Seb Soluções APP LTDA</p>
+          <h1 class="text-lg font-bold text-ink md:text-xl">Plano de Investimento</h1>
+        </div>
+      </div>
+      <nav class="hidden items-center gap-2 md:flex">
+        <a href="#visao" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-mist hover:text-pine">Visão</a>
+        <a href="#retorno" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-mist hover:text-pine">Retorno</a>
+        <a href="#cenarios" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-mist hover:text-pine">Cenários</a>
+        <a href="#pdf" class="rounded-full bg-pine px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink">PDF</a>
+      </nav>
+    </header>
+
+    <main id="pdfContent" class="space-y-8">
+      <section id="visao" class="pdf-block glass rounded-[2.2rem] border border-white/60 shadow-soft">
+        <div class="grid gap-8 px-6 py-8 lg:grid-cols-[1.15fr_0.85fr] lg:px-10 lg:py-12">
+          <div class="space-y-6">
+            <span class="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-pine">
+              <i class="bi bi-stars"></i>
+              Operação SaaS lucrativa em expansão
+            </span>
+            <div class="space-y-4">
+              <h2 class="max-w-4xl text-4xl font-bold leading-tight text-ink sm:text-5xl">
+                Expansão da Seb Soluções APP LTDA com fluxo de caixa atual, tecnologia própria e retorno estruturado
+              </h2>
+              <p class="max-w-3xl text-lg leading-8 text-slate-600">
+                Esta proposta apresenta um investimento em uma operação de software já validada, com duas plataformas SaaS ativas, faturamento recorrente e lucro líquido aproximado de R$ 10.000,00 mensais, combinando distribuição preferencial, participação no lucro incremental e garantia contratual reforçada.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <a href="#retorno" class="inline-flex items-center gap-2 rounded-full bg-pine px-6 py-3 font-semibold text-white transition hover:bg-ink">
+                <i class="bi bi-graph-up-arrow"></i>
+                Ver estrutura de retorno
+              </a>
+              <a href="#pdf" class="inline-flex items-center gap-2 rounded-full border border-pine/15 bg-white/85 px-6 py-3 font-semibold text-pine transition hover:bg-white">
+                <i class="bi bi-file-earmark-pdf"></i>
+                Gerar PDF
+              </a>
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            <article class="card-ring rounded-[1.8rem] border border-white/60 bg-white/84 p-6 shadow-soft">
+              <div class="mb-4 flex items-center justify-between">
+                <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mist text-2xl text-pine">
+                  <i class="bi bi-cash-stack"></i>
+                </span>
+                <span class="rounded-full bg-mint px-3 py-1 text-xs font-semibold text-[#2f7a59]">Base atual</span>
+              </div>
+              <p class="text-sm uppercase tracking-[0.2em] text-slate-500">Faturamento líquido mensal</p>
+              <p class="mt-2 text-4xl font-bold text-ink">R$ 10 mil</p>
+              <p class="mt-3 text-sm leading-6 text-slate-600">Fluxo recorrente atual que sustenta a distribuição mensal preferencial desde o primeiro mês.</p>
+            </article>
+
+            <article class="card-ring rounded-[1.8rem] border border-white/60 bg-white/84 p-6 shadow-soft">
+              <div class="mb-4 flex items-center justify-between">
+                <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0e6] text-2xl text-coral">
+                  <i class="bi bi-bank"></i>
+                </span>
+                <span class="rounded-full bg-[#fff3ea] px-3 py-1 text-xs font-semibold text-coral">Rodada atual</span>
+              </div>
+              <p class="text-sm uppercase tracking-[0.2em] text-slate-500">Opções principais</p>
+              <p class="mt-2 text-4xl font-bold text-ink">R$ 75 mil ou R$ 100 mil</p>
+              <p class="mt-3 text-sm leading-6 text-slate-600">A proposta pode ser estruturada em dois formatos independentes: entrada societária ou retorno financeiro contratual.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="pdf-block grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <article class="glass rounded-[1.8rem] border border-white/60 p-6 shadow-soft">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mist text-2xl text-pine">
+            <i class="bi bi-window-stack"></i>
+          </div>
+          <h3 class="text-lg font-bold">2 plataformas SaaS ativas</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Operação existente com produtos ativos, clientes e recorrência validada.</p>
+        </article>
+        <article class="glass rounded-[1.8rem] border border-white/60 p-6 shadow-soft">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0e6] text-2xl text-coral">
+            <i class="bi bi-cpu"></i>
+          </div>
+          <h3 class="text-lg font-bold">Tecnologia própria</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Desenvolvimento interno, menor dependência de terceiros e maior margem operacional.</p>
+        </article>
+        <article class="glass rounded-[1.8rem] border border-white/60 p-6 shadow-soft">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-2xl text-[#2f7a59]">
+            <i class="bi bi-arrow-repeat"></i>
+          </div>
+          <h3 class="text-lg font-bold">Retorno desde o mês 1</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Na opção de R$ 100 mil, a apresentação considera retorno mensal estimado de R$ 3.400,00 desde a fase inicial.</p>
+        </article>
+        <article class="glass rounded-[1.8rem] border border-white/60 p-6 shadow-soft">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff7dd] text-2xl text-gold">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <h3 class="text-lg font-bold">Garantia contratual reforcada</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Estrutura com garantia real principal por cessão fiduciária de recebíveis recorrentes.</p>
+        </article>
+      </section>
+
+      <section id="captacao" class="pdf-block grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mist text-2xl text-pine">
+              <i class="bi bi-bullseye"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Objetivo da captação</p>
+              <h2 class="text-2xl font-bold">Escala vertical e expansão horizontal</h2>
+            </div>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold text-ink">Frente 1 — Aquisição previsível</p>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Reforçar tráfego pago, SEO e geração de demanda para aumentar a entrada de leads qualificados e dar escala comercial à operação.</p>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold text-ink">Frente 2 — Conversão e retenção</p>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Aplicar automações comerciais, CRM, funis e melhorias de atendimento para elevar conversão, recorrência e retenção da base atual.</p>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold text-ink">Frente 3 — Produto e tecnologia</p>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Aprimorar as plataformas atuais, acelerar entregas e preparar novas funcionalidades com foco em margem, estabilidade e percepção de valor.</p>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold text-ink">Frente 4 — Expansão horizontal</p>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Lançar soluções complementares com foco em upsell e cross-sell sobre a base já adquirida, reduzindo o custo de aquisição dos próximos produtos.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff7dd] text-2xl text-gold">
+              <i class="bi bi-pie-chart-fill"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Uso do capital</p>
+              <h2 class="text-2xl font-bold">Distribuição estimada da alocação</h2>
+            </div>
+          </div>
+          <div class="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+            <div class="space-y-3">
+              <div class="rounded-2xl bg-white/88 p-4">
+                <div class="flex items-center justify-between">
+                  <p class="font-semibold">Trafego pago</p>
+                  <span class="font-bold text-pine">40%</span>
+                </div>
+                <p class="mt-1 text-sm text-slate-600">Aquisição de novos clientes.</p>
+              </div>
+              <div class="rounded-2xl bg-white/88 p-4">
+                <div class="flex items-center justify-between">
+                  <p class="font-semibold">SEO e conteúdo</p>
+                  <span class="font-bold text-pine">15%</span>
+                </div>
+                <p class="mt-1 text-sm text-slate-600">Geração de demanda orgânica.</p>
+              </div>
+              <div class="rounded-2xl bg-white/88 p-4">
+                <div class="flex items-center justify-between">
+                  <p class="font-semibold">Automações e CRM</p>
+                  <span class="font-bold text-pine">15%</span>
+                </div>
+                <p class="mt-1 text-sm text-slate-600">Conversão e retenção.</p>
+              </div>
+              <div class="rounded-2xl bg-white/88 p-4">
+                <div class="flex items-center justify-between">
+                  <p class="font-semibold">Produto e tecnologia</p>
+                  <span class="font-bold text-pine">20%</span>
+                </div>
+                <p class="mt-1 text-sm text-slate-600">Melhorias nas plataformas atuais.</p>
+              </div>
+              <div class="rounded-2xl bg-white/88 p-4">
+                <div class="flex items-center justify-between">
+                  <p class="font-semibold">Reserva operacional</p>
+                  <span class="font-bold text-pine">10%</span>
+                </div>
+                <p class="mt-1 text-sm text-slate-600">Segurança de caixa e testes estratégicos.</p>
+              </div>
+            </div>
+            <div class="rounded-[1.6rem] bg-white/88 p-4">
+              <canvas id="capitalUseChart" height="260"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pdf-block grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+        <article class="glass rounded-[1.75rem] border border-white/60 p-5 shadow-soft">
+          <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Opção 1</p>
+          <p class="mt-2 text-3xl font-bold">R$ 75 mil</p>
+          <p class="mt-2 text-sm text-slate-600">Entrada societária sugerida com 50% de participação, sujeita a contrato.</p>
+        </article>
+        <article class="glass rounded-[1.75rem] border border-white/60 p-5 shadow-soft">
+          <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Opção 2</p>
+          <p class="mt-2 text-3xl font-bold">R$ 100 mil</p>
+          <p class="mt-2 text-sm text-slate-600">Modelo com retorno financeiro mensal estimado e teto contratual definido.</p>
+        </article>
+        <article class="glass rounded-[1.75rem] border border-white/60 p-5 shadow-soft">
+          <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Parte lucro</p>
+          <p class="mt-2 text-3xl font-bold">50%</p>
+          <p class="mt-2 text-sm text-slate-600">Aplicável apenas à opção de R$ 75 mil, conforme formalização jurídica.</p>
+        </article>
+        <article class="glass rounded-[1.75rem] border border-white/60 p-5 shadow-soft">
+          <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Retorno mensal estimado</p>
+          <p class="mt-2 text-3xl font-bold">R$ 3.400,00</p>
+          <p class="mt-2 text-sm text-slate-600">Referência comercial adotada para a opção de R$ 100 mil.</p>
+        </article>
+        <article class="glass rounded-[1.75rem] border border-white/60 p-5 shadow-soft">
+          <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Retorno em 12 meses</p>
+          <p class="mt-2 text-3xl font-bold">R$ 40.800,00</p>
+          <p class="mt-2 text-sm text-slate-600">Equivalente à manutenção do fluxo mensal projetado por 1 ano.</p>
+        </article>
+      </section>
+
+      <section id="seguranca" class="pdf-block grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-2xl text-[#2f7a59]">
+              <i class="bi bi-shield-lock"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Estrutura de segurança</p>
+              <h2 class="text-2xl font-bold">Três camadas de proteção do investidor</h2>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold">1. Operação já lucrativa</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Lucro líquido mensal atual aproximado de R$ 10.000,00, permitindo iniciar remuneração logo no primeiro mês.</p>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold">2. Retorno mensal projetado</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Na opção financeira de R$ 100.000,00, a referência adotada é retorno mensal estimado de R$ 3.400,00, sustentado pela operação e pela estrutura contratual proposta.</p>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold">3. Garantia real principal</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Cessão fiduciária de recebíveis recorrentes das plataformas SaaS, complementada por instrumentos jurídicos aceitos entre as partes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0e6] text-2xl text-coral">
+              <i class="bi bi-file-earmark-lock2"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Instrumentos complementares</p>
+              <h2 class="text-2xl font-bold">Reforços jurídicos previstos</h2>
+            </div>
+          </div>
+          <ul class="grid gap-3 sm:grid-cols-2">
+            <li class="rounded-2xl bg-white/88 p-4 text-sm leading-6 text-slate-700">Vinculação de parte dos recebíveis recorrentes.</li>
+            <li class="rounded-2xl bg-white/88 p-4 text-sm leading-6 text-slate-700">Conta de recebimento vinculada ao contrato.</li>
+            <li class="rounded-2xl bg-white/88 p-4 text-sm leading-6 text-slate-700">Confissão de dívida com vencimento antecipado.</li>
+            <li class="rounded-2xl bg-white/88 p-4 text-sm leading-6 text-slate-700">Garantia pessoal do sócio fundador, se acordado.</li>
+            <li class="rounded-2xl bg-white/88 p-4 text-sm leading-6 text-slate-700 sm:col-span-2">Veículo jurídico sugerido: Sociedade em Conta de Participação, com a Seb Soluções APP LTDA como sócia ostensiva.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="retorno" class="pdf-block glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Modelo de retorno</p>
+              <h2 class="text-3xl font-bold text-ink">Modelo de retorno da opção de R$ 100 mil</h2>
+            <p class="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
+              Para a opção de R$ 100.000,00, a referência desta apresentação passa a ser retorno mensal estimado de R$ 3.400,00, equivalente a 3,4% ao mês sobre o capital aportado, com teto contratual total de 4x o valor investido.
+            </p>
+          </div>
+          <div class="rounded-2xl bg-white/88 px-5 py-4 text-sm text-slate-600">
+            Meta estratégica: atingir o teto em horizonte de até 36 meses, conforme evolução real da operação.
+          </div>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-[1fr_1fr]">
+          <div class="rounded-[1.6rem] bg-white/88 p-4">
+            <canvas id="returnFlowChart" height="270"></canvas>
+          </div>
+          <div class="grid gap-4">
+            <div class="rounded-2xl bg-white/88 p-5">
+              <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Exemplo com aporte de R$ 100.000,00</p>
+              <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                <div class="rounded-2xl bg-shell p-4">
+                  <p class="text-sm text-slate-500">Retorno mensal estimado</p>
+                  <p class="mt-1 text-2xl font-bold text-ink">R$ 3.400,00</p>
+                </div>
+                <div class="rounded-2xl bg-shell p-4">
+                  <p class="text-sm text-slate-500">Meta da fase 1</p>
+                  <p class="mt-1 text-2xl font-bold text-ink">R$ 150.000,00</p>
+                </div>
+                <div class="rounded-2xl bg-shell p-4">
+                  <p class="text-sm text-slate-500">Retorno em 12 meses</p>
+                  <p class="mt-1 text-2xl font-bold text-ink">R$ 40.800,00</p>
+                </div>
+                <div class="rounded-2xl bg-shell p-4">
+                  <p class="text-sm text-slate-500">Teto contratual</p>
+                  <p class="mt-1 text-2xl font-bold text-ink">R$ 400.000,00</p>
+                </div>
+                <div class="rounded-2xl bg-shell p-4">
+                  <p class="text-sm text-slate-500">Ganho bruto máximo</p>
+                  <p class="mt-1 text-2xl font-bold text-ink">R$ 300.000,00</p>
+                </div>
+              </div>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-5">
+              <p class="font-semibold text-ink">Lógica contratual da opção de R$ 100 mil</p>
+              <ul class="mt-3 space-y-2 text-sm leading-7 text-slate-600">
+                <li>Retorno mensal estimado de R$ 3.400,00 sobre o aporte de R$ 100.000,00.</li>
+                <li>Equivalência comercial de 3,4% ao mês, usada como referência nesta apresentação.</li>
+                <li>Projeção anual equivalente de R$ 40.800,00, mantendo o fluxo estimado por 12 meses.</li>
+                <li>Encerramento automatico ao atingir 4x do capital aportado.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cenarios" class="pdf-block grid gap-8 lg:grid-cols-[1.08fr_0.92fr]">
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mist text-2xl text-pine">
+              <i class="bi bi-table"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Cenários projetados</p>
+              <h2 class="text-2xl font-bold">Leitura comparativa do lucro incremental</h2>
+              <p class="mt-2 text-sm text-slate-500">Todos os valores abaixo representam estimativas mensais.</p>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="projection-table">
+              <thead>
+                <tr>
+                  <th>Cenário</th>
+                  <th>Lucro atual</th>
+                  <th>Lucro projetado</th>
+                  <th>Ganho incremental</th>
+                  <th>Retorno mensal da opção de R$ 100 mil</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-semibold">Conservador</td>
+                  <td>R$ 10.000,00</td>
+                  <td>R$ 20.000,00</td>
+                  <td>R$ 10.000,00</td>
+                  <td>R$ 3.400,00 por mês</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Base</td>
+                  <td>R$ 10.000,00</td>
+                  <td>R$ 35.000,00</td>
+                  <td>R$ 25.000,00</td>
+                  <td>R$ 3.400,00 por mês</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Otimista</td>
+                  <td>R$ 10.000,00</td>
+                  <td>R$ 50.000,00</td>
+                  <td>R$ 40.000,00</td>
+                  <td>R$ 3.400,00 por mês</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0e6] text-2xl text-coral">
+              <i class="bi bi-bar-chart-line-fill"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Comparativo visual</p>
+              <h2 class="text-2xl font-bold">Retorno mensal na fase inicial</h2>
+            </div>
+          </div>
+          <canvas id="scenarioChart" height="310"></canvas>
+          <div class="mt-5 rounded-2xl bg-white/88 p-4 text-sm leading-7 text-slate-600">
+            O gráfico compara o ganho incremental do negócio com o retorno mensal estimado da opção de R$ 100.000,00. Nesta revisão, a referência adotada para essa opção é R$ 3.400,00 por mês, independentemente do cenário operacional apresentado ao lado.
+          </div>
+        </div>
+      </section>
+
+      <section class="pdf-block grid gap-8 lg:grid-cols-2">
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff7dd] text-2xl text-gold">
+              <i class="bi bi-award"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Diferenciais da operação</p>
+              <h2 class="text-2xl font-bold">Por que esta proposta se destaca</h2>
+            </div>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold">Operação validada</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Produtos ativos, clientes e lucro recorrente antes da rodada.</p>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold">Tecnologia própria</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Execução mais rápida, maior controle e menor dependência externa.</p>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold">Fluxo desde o início</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Distribuição preferencial desde o primeiro mês de contrato.</p>
+            </div>
+            <div class="rounded-2xl bg-white/88 p-4">
+              <p class="font-semibold">Participação no crescimento</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Retorno conectado ao lucro incremental gerado pela expansão real.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mint text-2xl text-[#2f7a59]">
+              <i class="bi bi-eye"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Prestação de contas</p>
+              <h2 class="text-2xl font-bold">Transparência operacional prevista</h2>
+            </div>
+          </div>
+          <ul class="space-y-3 text-sm leading-7 text-slate-600">
+            <li class="rounded-2xl bg-white/88 p-4">Relatórios com faturamento mensal e lucro líquido mensal.</li>
+            <li class="rounded-2xl bg-white/88 p-4">Apuração do lucro incremental e valores pagos ao investidor.</li>
+            <li class="rounded-2xl bg-white/88 p-4">Acompanhamento dos investimentos em aquisição, campanhas e base de clientes.</li>
+            <li class="rounded-2xl bg-white/88 p-4">Periodicidade mensal ou conforme pactuado em contrato.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="pdf-block grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0e6] text-2xl text-coral">
+              <i class="bi bi-exclamation-triangle"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Considerações de risco</p>
+              <h2 class="text-2xl font-bold">Riscos inerentes e mitigações</h2>
+            </div>
+          </div>
+          <ul class="space-y-3 text-sm leading-7 text-slate-600">
+            <li class="rounded-2xl bg-white/88 p-4">Variação no desempenho das campanhas de tráfego pago.</li>
+            <li class="rounded-2xl bg-white/88 p-4">Aumento do custo de aquisição de clientes e oscilações de mercado.</li>
+            <li class="rounded-2xl bg-white/88 p-4">Cancelamentos de assinaturas e necessidade de ajustes de produto.</li>
+            <li class="rounded-2xl bg-white/88 p-4">Riscos operacionais próprios da gestão de uma empresa de tecnologia.</li>
+          </ul>
+        </div>
+
+        <div class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+          <div class="mb-6 flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-mist text-2xl text-pine">
+              <i class="bi bi-journal-check"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Resumo da proposta</p>
+              <h2 class="text-2xl font-bold">Duas opções objetivas de entrada</h2>
+            </div>
+          </div>
+          <p class="mb-4 text-sm leading-7 text-slate-600">
+            As alternativas abaixo são independentes entre si. A intenção desta apresentação é facilitar a comparação entre uma entrada societária de R$ 75.000,00 e um aporte financeiro estruturado de R$ 100.000,00.
+          </p>
+          <div class="overflow-x-auto">
+            <table class="projection-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Opção de R$ 75 mil</th>
+                  <th>Opção de R$ 100 mil</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="font-semibold">Empresa</td><td>Seb Soluções APP LTDA</td><td>Seb Soluções APP LTDA</td></tr>
+                <tr><td class="font-semibold">Modelo</td><td>Entrada societária</td><td>Aporte com retorno financeiro contratual</td></tr>
+                <tr><td class="font-semibold">Valor de entrada</td><td>R$ 75.000,00</td><td>R$ 100.000,00</td></tr>
+                <tr><td class="font-semibold">Direito principal</td><td>50% de participação societária, conforme contrato</td><td>Retorno mensal estimado de R$ 3.400,00</td></tr>
+                <tr><td class="font-semibold">Participação nos lucros</td><td>50% dos lucros líquidos, conforme apuração e distribuição pactuada</td><td>Não depende de ingresso societário direto; segue a estrutura financeira pactuada</td></tr>
+                <tr><td class="font-semibold">Participação em custos e decisões</td><td>Conforme regras societárias definidas em contrato</td><td>Não implica entrada societária direta</td></tr>
+                <tr><td class="font-semibold">Teto de retorno</td><td>Não se aplica da mesma forma; depende do modelo societário</td><td>4x o capital aportado</td></tr>
+                <tr><td class="font-semibold">Garantia principal sugerida</td><td>Formalização societária e definição de direitos econômicos</td><td>Cessão fiduciária de recebíveis recorrentes</td></tr>
+                <tr><td class="font-semibold">Veículo jurídico sugerido</td><td>Contrato societário específico</td><td>Sociedade em Conta de Participação</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="pdf" class="pdf-block glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+        <div class="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Área para PDF</p>
+            <h2 class="mt-2 text-3xl font-bold text-ink">Gerar versão em PDF desta proposta</h2>
+            <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+              Use esta área para exportar a apresentação atual em PDF. O arquivo é gerado a partir do conteúdo principal da página, preservando o visual institucional para compartilhamento com investidores, parceiros ou assessoria jurídica.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <button id="generatePdfButton" type="button" class="no-print inline-flex items-center gap-2 rounded-full bg-pine px-6 py-3 font-semibold text-white transition hover:bg-ink">
+                <i class="bi bi-file-earmark-pdf"></i>
+                Gerar PDF agora
+              </button>
+              <button id="printButton" type="button" class="no-print inline-flex items-center gap-2 rounded-full border border-pine/15 bg-white/88 px-6 py-3 font-semibold text-pine transition hover:bg-white">
+                <i class="bi bi-printer"></i>
+                Abrir impressão
+              </button>
+            </div>
+          </div>
+          <div class="rounded-[1.8rem] bg-white/88 p-5">
+            <p class="font-semibold text-ink">O PDF deve refletir:</p>
+            <ul class="mt-4 space-y-2 text-sm leading-7 text-slate-600">
+              <li>Resumo executivo da operação.</li>
+              <li>Estrutura de captação e de retorno.</li>
+              <li>Cenários projetados e uso do capital.</li>
+              <li>Garantias, riscos e observações jurídicas.</li>
+              <li>Apresentação pronta para reuniões ou encaminhamento comercial.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass rounded-[2rem] border border-white/60 p-6 shadow-soft sm:p-8">
+        <div class="max-w-5xl space-y-4">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Observação importante</p>
+          <h2 class="text-2xl font-bold text-ink">Base informativa e formalização contratual posterior</h2>
+          <p class="text-sm leading-7 text-slate-600">
+            Este documento possui caráter informativo e comercial. A formalização do investimento deverá ocorrer por meio de contrato específico, com validação jurídica e contábil, definindo valor do aporte, forma de pagamento, prazo, garantias, distribuição mensal preferencial, participação no lucro incremental, critérios de apuração, hipóteses de inadimplência, vencimento antecipado, teto de retorno e encerramento da parceria.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+  <script type="module">
+    import { animate, inView, stagger } from "https://cdn.jsdelivr.net/npm/motion@12.11.1/+esm";
+
+    const drawer = document.getElementById("mobileDrawer");
+    const backdrop = document.getElementById("mobileBackdrop");
+    const drawerOpen = document.getElementById("drawerOpen");
+    const drawerClose = document.getElementById("drawerClose");
+    const drawerLinks = document.querySelectorAll(".drawer-link");
+    const generatePdfButton = document.getElementById("generatePdfButton");
+    const printButton = document.getElementById("printButton");
+    const pdfContent = document.getElementById("pdfContent");
+
+    const openDrawer = () => {
+      drawer.classList.remove("-translate-x-full");
+      backdrop.classList.remove("hidden");
+      document.body.classList.add("drawer-open");
+    };
+
+    const closeDrawer = () => {
+      drawer.classList.add("-translate-x-full");
+      backdrop.classList.add("hidden");
+      document.body.classList.remove("drawer-open");
+    };
+
+    drawerOpen?.addEventListener("click", openDrawer);
+    drawerClose?.addEventListener("click", closeDrawer);
+    backdrop?.addEventListener("click", closeDrawer);
+    drawerLinks.forEach((link) => link.addEventListener("click", closeDrawer));
+
+    const formatCurrency = (value) =>
+      new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+
+    new Chart(document.getElementById("capitalUseChart"), {
+      type: "doughnut",
+      data: {
+        labels: ["Tráfego pago", "SEO e conteúdo", "Automações e CRM", "Produto e tecnologia", "Reserva operacional"],
+        datasets: [{
+          data: [40, 15, 15, 20, 10],
+          backgroundColor: ["#79b8c7", "#cda45d", "#e98167", "#285e68", "#a5cfc2"],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        cutout: "70%",
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              usePointStyle: true,
+              boxWidth: 10,
+              padding: 16
+            }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById("returnFlowChart"), {
+      type: "bar",
+      data: {
+        labels: ["Retorno em 12 meses", "Meta da fase 1", "Ganho bruto máximo", "Teto contratual"],
+        datasets: [{
+          data: [40800, 150000, 300000, 400000],
+          backgroundColor: ["#79b8c7", "#285e68", "#cda45d", "#e98167"],
+          borderRadius: 18
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => formatCurrency(context.raw)
+            }
+          }
+        },
+        scales: {
+          y: {
+            ticks: {
+              callback: (value) => formatCurrency(value)
+            },
+            grid: { color: "rgba(40,94,104,0.08)" }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById("scenarioChart"), {
+      type: "bar",
+      data: {
+        labels: ["Conservador", "Base", "Otimista"],
+        datasets: [
+          {
+            label: "Ganho incremental",
+            data: [10000, 25000, 40000],
+            backgroundColor: "#79b8c7",
+            borderRadius: 16
+          },
+          {
+            label: "Retorno mensal da opção de R$ 100 mil",
+            data: [3400, 3400, 3400],
+            backgroundColor: "#f08a5d",
+            borderRadius: 16
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              usePointStyle: true,
+              boxWidth: 10,
+              padding: 16
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}`
+            }
+          }
+        },
+        scales: {
+          y: {
+            ticks: {
+              callback: (value) => formatCurrency(value)
+            },
+            grid: { color: "rgba(40,94,104,0.08)" }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    generatePdfButton?.addEventListener("click", async () => {
+      const originalText = generatePdfButton.innerHTML;
+      generatePdfButton.innerHTML = '<i class="bi bi-hourglass-split"></i> Gerando PDF...';
+      generatePdfButton.disabled = true;
+
+      const opt = {
+        margin: 8,
+        filename: "plano-investimento-seb-solucoes.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0, windowWidth: 1440 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+      };
+
+      try {
+        await html2pdf().set(opt).from(pdfContent).save();
+      } finally {
+        generatePdfButton.innerHTML = originalText;
+        generatePdfButton.disabled = false;
+      }
+    });
+
+    printButton?.addEventListener("click", () => window.print());
+
+    animate("header > *", { opacity: [0, 1], y: [22, 0] }, { duration: 0.7, delay: stagger(0.08) });
+
+    inView(".glass", (element) => {
+      animate(
+        element,
+        { opacity: [0, 1], y: [24, 0], scale: [0.985, 1] },
+        { duration: 0.6, easing: "ease-out" }
+      );
+    }, { margin: "-10% 0px -10% 0px" });
+  </script>
+</body>
+</html>
